@@ -1,6 +1,5 @@
 import numpy as np
 import subprocess
-import time
 
 def projection(fov, ratio, near, far):
     """
@@ -38,8 +37,6 @@ if __name__ == "__main__":
 
     # Run your 3D display software (e.g., ./display)
     print("Run your display program to visualize the projection.")
-
-    time.sleep(1)
 
     # Run the `display` script
     subprocess.run(["./display"])
