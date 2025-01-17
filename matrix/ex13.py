@@ -1,4 +1,4 @@
-from ex10 import row_echelon
+from ex10 import row_echelon_form
 import argparse
 
 def rank(u):
@@ -6,7 +6,7 @@ def rank(u):
     Computes the rank of a matrix.
     """
     # Transform to row echelon form
-    ref = row_echelon(u)
+    ref = row_echelon_form(u)
 
     # Count non-zero rows
     rank = 0

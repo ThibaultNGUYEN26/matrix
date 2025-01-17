@@ -1,28 +1,41 @@
 import argparse
 
-def row_echelon(u):
+def row_echelon_form(u):
     """
-    Transforms a matrix into row echelon form using Gaussian elimination.
+    Transforms a matrix into reduced row echelon form using Gaussian elimination.
     """
     rows = len(u)
     cols = len(u[0])
-    for i in range(min(rows, cols)):  # Pivot index can't exceed matrix dimensions
+    lead = 0  # Track the leading column (pivot column)
+
+    for r in range(rows):
+        if lead >= cols:
+            break
+
         # Step 1: Ensure the pivot is non-zero, swap rows if necessary
-        if u[i][i] == 0:
-            for j in range(i + 1, rows):
-                if u[j][i] != 0:
-                    u[i], u[j] = u[j], u[i]
-                    break
+        i = r
+        while u[i][lead] == 0:
+            i += 1
+            if i == rows:
+                i = r
+                lead += 1
+                if lead == cols:
+                    return u
 
-        # Step 2: Normalize the pivot row
-        if u[i][i] != 0:
-            u[i] = [x / u[i][i] for x in u[i]]
+        # Swap rows if necessary
+        u[r], u[i] = u[i], u[r]
 
-        # Step 3: Eliminate entries below the pivot
-        for j in range(i + 1, rows):
-            if u[j][i] != 0:
-                factor = u[j][i]
-                u[j] = [u[j][k] - factor * u[i][k] for k in range(cols)]
+        # Step 2: Normalize the pivot row (set the pivot to 1)
+        pivot = u[r][lead]
+        u[r] = [x / pivot for x in u[r]]
+
+        # Step 3: Eliminate all entries in the column above and below the pivot
+        for i in range(rows):
+            if i != r:
+                factor = u[i][lead]
+                u[i] = [u[i][k] - factor * u[r][k] for k in range(cols)]
+
+        lead += 1
 
     return u
 
@@ -52,7 +65,7 @@ if __name__ == "__main__":
     for u in test_cases:
         print(f"u: {u}")
         try:
-            print("Row Echelon:", row_echelon(u))
+            print("Row Echelon:", row_echelon_form(u))
         except ValueError as e:
             print("Error:", e)
         print()
