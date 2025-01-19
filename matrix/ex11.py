@@ -4,25 +4,36 @@ def determinant(u):
     """
     Computes the determinant of a square matrix.
     """
+
     # Check if the matrix is square
     if len(u) != len(u[0]):
-        raise ValueError("u must be square.")
+        raise ValueError("Matrix must be square.")
 
-    # Base case: 1x1 u
-    if len(u) == 1:
-        return u[0][0]
+    n = len(u)
+    matrix = [row[:] for row in u]  # Create a copy to avoid modifying the input
+    det = 1  # Initialize determinant
 
-    # Base case: 2x2 u
-    if len(u) == 2:
-        return u[0][0] * u[1][1] - u[0][1] * u[1][0]
+    for col in range(n):
+        # Find the pivot row (largest absolute value in the column for stability)
+        pivot_row = max(range(col, n), key=lambda i: abs(matrix[i][col]))
 
-    # Recursive case: Expansion by minors
-    det = 0
-    for col in range(len(u)):
-        # Minor u
-        minor = [row[:col] + row[col + 1:] for row in u[1:]]
-        # Compute determinant recursively
-        det += (-1)**col * u[0][col] * determinant(minor)
+        # Swap if the pivot is not the current row
+        if pivot_row != col:
+            matrix[col], matrix[pivot_row] = matrix[pivot_row], matrix[col]
+            det *= -1  # Swapping rows changes the sign of the determinant
+
+        # If the pivot is zero, the determinant is zero
+        if abs(matrix[col][col]) < 1e-10:
+            return 0  # Matrix is singular
+
+        # Multiply determinant by pivot element
+        det *= matrix[col][col]
+
+        # Eliminate below the pivot
+        for row in range(col + 1, n):
+            factor = matrix[row][col] / matrix[col][col]
+            for k in range(col, n):
+                matrix[row][k] -= factor * matrix[col][k]
 
     return det
 
